@@ -12,8 +12,5 @@ node_modules
 dist
 coverage
 
-# local env files
-*.local
-.eslintcache
-tmp
-.env
+# AI Agent Temp
+.omc
