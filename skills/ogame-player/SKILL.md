@@ -1,5 +1,5 @@
 ---
-name: reogame-player
+name: ogame-player
 description: 星环之路（Reogame）太空战争策略游戏AI玩家。教AI理解游戏机制、资源管理、建筑升级、科技研发、舰队操作、战斗策略和扩张规划。当用户提到星环之路、星怒、ogame、reogame时自动触发。
 argument-hint: [action] [target]
 ---
