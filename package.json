@@ -1,8 +1,11 @@
 {
   "name": "reogame-cli",
   "version": "1.0.0",
-  "description": "Reogame CLI",
+  "description": "AI Agent 友好的 OGame 命令行工具 - 通过命令行调用游戏接口实现自动化",
   "keywords": [
+    "ai-agent",
+    "automation",
+    "cli",
     "ogame",
     "ogame-cli",
     "reogame"
@@ -13,6 +16,16 @@
     "email": "2911331070@qq.com",
     "url": "https://github.com/lovezhangchuangxin"
   },
+  "bin": {
+    "ogame": "./dist/bin.mjs"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "COMMANDS.md",
+    "LICENSE",
+    "package.json"
+  ],
   "type": "module",
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.mts",
@@ -25,7 +38,8 @@
   "scripts": {
     "dev": "tsdown --watch",
     "build": "tsdown",
-    "format": "oxfmt"
+    "format": "oxfmt",
+    "cli": "node ./dist/bin.mjs"
   },
   "dependencies": {
     "axios": "^1.13.5",

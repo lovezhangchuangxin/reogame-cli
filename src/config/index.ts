@@ -2,6 +2,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { GameConfig, DEFAULT_CONFIG } from './types'
+import { encrypt, decrypt } from './crypto'
 
 /** 配置文件目录 */
 export const CONFIG_DIR = join(homedir(), '.ogame')
@@ -132,20 +133,30 @@ class ConfigManager {
   }
 
   /**
-   * 获取用户配置
+   * 获取用户配置（密码会自动解密）
    */
   getUser() {
-    return this.load().user
+    const user = this.load().user
+    // 解密密码
+    return {
+      ...user,
+      password: decrypt(user.password),
+    }
   }
 
   /**
-   * 更新用户凭证
+   * 更新用户凭证（密码会自动加密）
    */
   setUser(credentials: Partial<GameConfig['user']>): void {
     const current = this.load()
+    // 加密密码
+    const encryptedCredentials = {
+      ...credentials,
+      password: credentials.password ? encrypt(credentials.password) : current.user.password,
+    }
     this.config = {
       ...current,
-      user: { ...current.user, ...credentials },
+      user: { ...current.user, ...encryptedCredentials },
     }
     this.save()
   }

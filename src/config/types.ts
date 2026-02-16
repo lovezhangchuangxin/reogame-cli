@@ -38,11 +38,12 @@ export interface ServerConfig {
 
 /**
  * 用户相关配置
+ * 注意: 密码以加密形式存储
  */
 export interface UserConfig {
   /** 用户名 */
   username: string
-  /** 密码 */
+  /** 加密后的密码 */
   password: string
   /** token */
   token: string

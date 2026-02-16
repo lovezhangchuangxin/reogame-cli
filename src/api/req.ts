@@ -2,20 +2,33 @@ import axios, { AxiosRequestConfig } from 'axios'
 import { DafaultRequestMethod, ResponseData } from './types'
 import { configManager } from '../config'
 
+/**
+ * 获取完整的 baseURL
+ * 根据配置管理器中的服务器配置动态生成
+ */
+function getBaseURL(): string {
+  const { host, port, https } = configManager.getServer()
+  const protocol = https ? 'https' : 'http'
+  return `${protocol}://${host}:${port}/api`
+}
+
 // 创建 axios 实例
 export const instance = axios.create({
-  baseURL: `/api`,
   timeout: 10000,
 })
 
 // 请求拦截器
 instance.interceptors.request.use(
   (config) => {
+    // 动态设置 baseURL（支持运行时切换服务器）
+    config.baseURL = getBaseURL()
+
     // 携带 token
-    const token = configManager.getUser().token
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`
+    const user = configManager.getUser()
+    if (user.token) {
+      config.headers['Authorization'] = `Bearer ${user.token}`
     }
+
     return config
   },
   (error) => {
@@ -23,13 +36,23 @@ instance.interceptors.request.use(
   },
 )
 
+/**
+ * Token 过期错误
+ */
+export class TokenExpiredError extends Error {
+  constructor(message: string = 'token已过期，请使用 reogame auth login 命令重新登录') {
+    super(message)
+    this.name = 'TokenExpiredError'
+  }
+}
+
 // 响应拦截器
 instance.interceptors.response.use(
   (response) => {
-    // '401'
+    // '401' token 过期
     if (response.data.code == 401) {
       configManager.setUser({ token: '' })
-      response.data.msg = 'token过期，请重新登录'
+      throw new TokenExpiredError()
     }
 
     return response
@@ -43,7 +66,7 @@ instance.interceptors.response.use(
 export const req = async <T>(
   method: DafaultRequestMethod,
   url: string,
-  data?: any,
+  data?: unknown,
   config: AxiosRequestConfig = {},
 ): Promise<ResponseData<T>> => {
   config = {
