@@ -98,13 +98,13 @@ CLI 命令层 (cli/) → API 请求层 (api/) → 游戏服务器
 
 ```typescript
 // 配置存储位置
-~/.ogame/ogame.json
+~/.ogame/aegmo.json
 
 // 使用方式
 import { configManager } from './config'
 
-configManager.getServer()  // { host, port, https }
-configManager.getUser()    // { username, password (自动解密), token }
+configManager.getServer() // { host, port, https }
+configManager.getUser() // { username, password (自动解密), token }
 configManager.setUser({ token: 'xxx' })
 configManager.setServer({ host: 'new.host' })
 ```
@@ -133,9 +133,9 @@ try {
 
 ```typescript
 interface CLIResponse<T> {
-  code: number      // 0=成功, 非0=错误
-  msg: string       // 消息
-  data?: T          // 返回数据
+  code: number // 0=成功, 非0=错误
+  msg: string // 消息
+  data?: T // 返回数据
   meta: {
     timestamp: number
     requestId?: string
@@ -146,32 +146,39 @@ interface CLIResponse<T> {
 ## 命令参考
 
 ### 认证
+
 - `ogame login -u <username> -p <password>` - 登录
 - `ogame logout` - 登出
 - `ogame whoami` - 查看当前用户
 
 ### 配置
+
 - `ogame config server --host <host> --port <port>` - 设置服务器
 - `ogame config show` - 显示当前配置
 
 ### 游戏
+
 - `ogame game info` - 游戏信息
 - `ogame game resources` - 资源概览
 
 ### 行星
+
 - `ogame planet list` - 行星列表
 - `ogame planet info <id>` - 行星详情
 
 ### 建筑/科技/飞船/防御
+
 - `ogame building list` - 建筑列表
 - `ogame tech research <id>` - 研究科技
 - `ogame ship build <type> <count>` - 建造飞船
 
 ### 舰队
+
 - `ogame fleet list` - 舰队列表
 - `ogame fleet send` - 派遣舰队
 
 ### 其他
+
 - `ogame market` - 市场命令
 - `ogame alliance` - 联盟命令
 - `ogame message` - 消息命令
@@ -212,5 +219,6 @@ pnpm format
 ## 发布配置
 
 package.json `files` 字段控制发布内容:
+
 - `dist/` - 编译产物
 - `README.md`, `COMMANDS.md`, `LICENSE`
