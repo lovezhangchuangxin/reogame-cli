@@ -1,6 +1,6 @@
 {
   "name": "reogame-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI Agent 友好的 OGame 命令行工具 - 通过命令行调用游戏接口实现自动化",
   "keywords": [
     "ai-agent",
