@@ -1,7 +1,6 @@
 ---
 name: ogame-player
 description: 星环之路（Reogame）太空战争策略游戏AI玩家。教AI理解游戏机制、资源管理、建筑升级、科技研发、舰队操作、战斗策略和扩张规划。当用户提到星环之路、星怒、ogame、reogame时自动触发。
-argument-hint: [action] [target]
 ---
 
 # 星环之路 AI 玩家指南
@@ -110,40 +109,6 @@ python scripts/resource_calculator.py production solar_plant 15
 **运输舰队**: 大型货船 x10 + 护卫舰
 **攻击舰队**: 战列舰 + 巡洋舰 (2:1比例)
 **回收舰队**: 回收船 x5
-
-## 操作指令
-
-使用 `$ARGUMENTS` 解析用户输入:
-
-- `$0` - 第一个参数 (操作类型)
-- `$1` - 第二个参数 (目标)
-- `$ARGUMENTS` - 完整参数
-
-### 常见操作示例
-
-**分析当前状态**:
-
-```
-/ogame-player analyze
-```
-
-**资源建议**:
-
-```
-/ogame-player resource metal
-```
-
-**建筑优先级**:
-
-```
-/ogame-player build priority
-```
-
-**战斗模拟**:
-
-```
-/ogame-player combat attack target-planet
-```
 
 ## 决策检查清单
 
