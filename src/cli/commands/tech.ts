@@ -31,15 +31,22 @@ async function researchTech(options: Record<string, unknown>): Promise<CLIRespon
   const authResult = requireAuth()
   if ('code' in authResult) return authResult
 
-  const { type, amount } = options
+  const { type, amount, planetId } = options
   if (!type) {
     return error(ErrorCode.CLI_PARAM_MISSING, '请提供科技类型')
   }
 
   try {
+    // 如果没有指定星球ID，获取主星球ID
+    let targetPlanetId = planetId ? parseInt(planetId as string, 10) : 0
+    if (!targetPlanetId) {
+      const userData = await GameApi.getMyData()
+      targetPlanetId = userData.data?.mainPlanetId || 0
+    }
+
     const added = amount ? parseInt(amount as string, 10) : 1
     const result = await GameApi.addBuildTask(
-      0, // 科技研究不需要星球 ID
+      targetPlanetId,
       parseInt(type as string, 10),
       added,
     )
@@ -56,15 +63,21 @@ async function cancelTech(options: Record<string, unknown>): Promise<CLIResponse
   const authResult = requireAuth()
   if ('code' in authResult) return authResult
 
-  const { type } = options
+  const { type, planetId } = options
   if (!type) {
     return error(ErrorCode.CLI_PARAM_MISSING, '请提供科技类型')
   }
 
   try {
-    // taskType 2 = 科技
+    // 如果没有指定星球ID，获取主星球ID
+    let targetPlanetId = planetId ? parseInt(planetId as string, 10) : 0
+    if (!targetPlanetId) {
+      const userData = await GameApi.getMyData()
+      targetPlanetId = userData.data?.mainPlanetId || 0
+    }
+
     const result = await GameApi.cancelLastTaskQueue(
-      0,
+      targetPlanetId,
       parseInt(type as string, 10) as BuildTaskTarget,
     )
     return success(result, '取消研究成功')
@@ -80,14 +93,21 @@ async function accelerateTech(options: Record<string, unknown>): Promise<CLIResp
   const authResult = requireAuth()
   if ('code' in authResult) return authResult
 
-  const { type } = options
+  const { type, planetId } = options
   if (!type) {
     return error(ErrorCode.CLI_PARAM_MISSING, '请提供科技类型')
   }
 
   try {
+    // 如果没有指定星球ID，获取主星球ID
+    let targetPlanetId = planetId ? parseInt(planetId as string, 10) : 0
+    if (!targetPlanetId) {
+      const userData = await GameApi.getMyData()
+      targetPlanetId = userData.data?.mainPlanetId || 0
+    }
+
     const result = await GameApi.accelerateBuildTask(
-      0,
+      targetPlanetId,
       parseInt(type as string, 10) as BuildTaskTarget,
     )
     return success(result, '加速研究成功')
@@ -131,6 +151,7 @@ export function createTechCommand(): Command {
     .description('研究科技')
     .requiredOption('--type <type>', '科技类型 (枚举值)')
     .option('--amount <n>', '研究等级增量', '1')
+    .option('--planet-id <id>', '星球ID (不指定则使用主星球)')
     .action(async (options) => {
       const result = await researchTech(options)
       outputJSON(result)
@@ -140,6 +161,7 @@ export function createTechCommand(): Command {
     .command('cancel')
     .description('取消研究')
     .requiredOption('--type <type>', '科技类型 (枚举值)')
+    .option('--planet-id <id>', '星球ID (不指定则使用主星球)')
     .action(async (options) => {
       const result = await cancelTech(options)
       outputJSON(result)
@@ -149,6 +171,7 @@ export function createTechCommand(): Command {
     .command('accelerate')
     .description('加速研究')
     .requiredOption('--type <type>', '科技类型 (枚举值)')
+    .option('--planet-id <id>', '星球ID (不指定则使用主星球)')
     .action(async (options) => {
       const result = await accelerateTech(options)
       outputJSON(result)
